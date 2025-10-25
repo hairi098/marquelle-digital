@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Tema Undangan Digital</title>
+<style>
+    body { font-family: Arial, sans-serif; }
+    .btn { padding: 6px 12px; border: 1px solid #ccc; text-decoration: none; display: inline-block; }
+    .btn-active { background: #007bff; color: white; }
+    .card { border: 1px solid #ccc; padding: 10px; text-align: center; }
+</style>
+</head>
+<body>
+
+<section class="section-heading py-5">
+    <div class="container text-center">
+        <h1 class="font-weight-bold">Tema Undangan Digital</h1>
+        <p class="mb-3">Tema Undangan Digital Website</p>
+        <form action="" method="get" class="d-flex justify-content-center">
+            <input type="search" name="search" class="input form-control py-4 text-center"
+                placeholder="Cari Tema: Cth. Syari, Biru, Tanpa Foto" style="width: 400px; max-width: 100%">
+        </form>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container text-center">
+        <div class="form-row justify-content-center pt-2 pb-4" id="filter-buttons">
+            <a href="#" class="btn btn-active" data-filter="all">Semua Tema</a>
+            <a href="#" class="btn" data-filter="wedding">Wedding</a>
+            <a href="#" class="btn" data-filter="birthday">Kids & Birthday</a>
+            <a href="#" class="btn" data-filter="umum">Umum & Seminar</a>
+        </div>
+
+        <div class="py-4">
+            <div class="row justify-content-center">
+                <article class="col" data-category="umum">
+                    <div class="card">
+                        <h2>Garuda</h2>
+                    </div>
+                </article>
+                <article class="col" data-category="wedding">
+                    <div class="card">
+                        <h2>Gadang</h2>
+                    </div>
+                </article>
+                <article class="col" data-category="birthday">
+                    <div class="card">
+                        <h2>Mickey Red</h2>
+                    </div>
+                </article>
+                <article class="col" data-category="wedding">
+                    <div class="card">
+                        <h2>Beautiful Aqsa</h2>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const params = new URLSearchParams(window.location.search);
+    const searchQuery = params.get("search")?.toLowerCase() || "";
+    const categoryQuery = params.get("category")?.toLowerCase() || "";
+
+    const form = document.querySelector("form");
+    const searchInput = form.querySelector("input[name='search']");
+    const articles = document.querySelectorAll("article");
+    const categoryButtons = document.querySelectorAll("#filter-buttons a");
+
+    // Set search box value from URL
+    searchInput.value = searchQuery;
+
+    // Apply filters on page load
+    filterCards(searchQuery, categoryQuery);
+
+    // Highlight active category
+    categoryButtons.forEach(btn => {
+        btn.classList.toggle("btn-active", btn.dataset.filter === categoryQuery || (categoryQuery === "" && btn.dataset.filter === "all"));
+    });
+
+    // Handle category button clicks
+    categoryButtons.forEach(btn => {
+        btn.addEventListener("click", e => {
+            e.preventDefault();
+            const category = btn.dataset.filter;
+
+            if (category === "all") {
+                params.delete("category");
+            } else {
+                params.set("category", category);
+            }
+            window.location.search = params.toString();
+        });
+    });
+
+    // Handle search form submission
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        const value = searchInput.value.trim();
+        if (value) {
+            params.set("search", value);
+        } else {
+            params.delete("search");
+        }
+        window.location.search = params.toString();
+    });
+
+    // Filter function
+    function filterCards(search, category) {
+        articles.forEach(article => {
+            const title = article.querySelector("h2").textContent.toLowerCase();
+            const articleCategory = article.dataset.category.toLowerCase();
+
+            const matchesSearch = title.includes(search);
+            const matchesCategory = !category || articleCategory === category;
+
+            article.style.display = (matchesSearch && matchesCategory) ? "" : "none";
+        });
+    }
+});
+</script>
+
+</body>
+</html>
